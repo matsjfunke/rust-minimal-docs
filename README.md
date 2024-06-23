@@ -109,3 +109,27 @@ let months = ["January", "February", "March", "April", "May", "June", "July",
 let a: [i32; 5] = [1, 2, 3, 4, 5];
 ```
 
+#Functions
+```rust
+ // Statements = intructions for  actions that dont return a value.
+let y = 6;
+// Expression evaluate to a resultant value.
+let y = {
+    let x = 3;
+    x + 1
+};
+```
+- main function / entrypoint at top of file
+- returning values
+```rust
+fn main() {
+    let result = sum(5, 10);
+    println!("The sum is: {result}");
+}
+fn sum(a: i32, b: i32) -> i32 { //don’t need to name return values, but we must declare their type after arrow ->
+    a + b // implicit return
+    // or
+    return a + b // explicit return
+
+}
+```
