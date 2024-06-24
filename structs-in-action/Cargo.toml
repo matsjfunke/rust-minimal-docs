@@ -1,0 +1,6 @@
+[package]
+name = "structs-in-action"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

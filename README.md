@@ -20,8 +20,8 @@
    - [Stack & Heap](#stack--heap)
    - [Ownership rules](#ownership-rules)
    - [Variable Scope](#variable-scope)
-   - [References & Borrowing](## References)
-
+   - [References & Borrowing](#references)
+10. [Structs, structuring related data](#structs)
 
 # Installation / Update
 ```bash
@@ -33,6 +33,8 @@ rustup update
 
 # Compile / run
 ```bash
+# create rust file
+echo 'fn main() { println!("Hello, World!"); }' > hello.rs
 # compile
 rustc main.rs
 # run
@@ -43,7 +45,7 @@ rustc main.rs
 Instead of saving the result of the build in the same directory as our code, Cargo stores it in the target/debug directory
 ```bash
 # create a project
-cargo new <name>
+cargo new <project-name>
 # build a project
 cargo build
 # build and run a project in one step
@@ -109,7 +111,7 @@ char literals with single quotes, type is four bytes in size and represents a Un
 - literals which use double quotes.
 - all UTF-8
 1. String -> create or modify strings
-2. &str (string slice) -> read only (immutable) [more on references later](## References)
+2. &str (string slice) -> read only (immutable) [more on references later](#references)
 
 
 ```rust
@@ -291,5 +293,88 @@ fn main() {
 
 fn change(some_string: &mut String) {
     some_string.push_str(", world");
+}
+```
+
+
+# Structs
+similar to [tuple](#tuple-): pieces of struct can be different types but in struct each piece of data has a name to clarify purpose
+```rust
+// define a struct
+struct User {
+    active: bool,
+    username: String,
+    email: String,
+    sign_in_count: u64,
+}
+
+// to use struct create an instance of that struct by specifying values
+fn main() {
+    let mut user1 = User { // entire instance must be mutable; Rust doesn’t allow us to mark only certain fields as mutable
+        active: true,
+        username: String::from("someusername123"),
+        email: String::from("someone@example.com"),
+        sign_in_count: 1,
+    };
+
+    user1.email = String::from("anotheremail@example.com"); // access specific value with dot-notation
+
+    // Creating Instances from Other Instances with Struct Update Syntax
+    let user2 = User {
+        active: user1.active, 
+        username: user1.username,
+        email: String::from("another@example.com"),
+        sign_in_count: user1.sign_in_count,
+    };
+}
+
+// Function that returns a User instance
+fn build_user(email: String, username: String) -> User {
+    User {
+        active: true,
+        username, // type is already defined in parameter
+        email,
+        sign_in_count: 1,
+    }
+}
+```
+
+## Tuple Structs w/o names
+```rust
+struct Color(i32, i32, i32);
+struct Cursor(i32, i32, i32, i32);
+
+fn main() {
+    let black = Color(0, 0, 0);
+    let current_location = Cursor(0, 0, 0);
+}
+```
+
+## Struct Methods (functions inside structs)
+- impl stands for implementation aka. rust method
+```rust
+#[derive(Debug)] // Debug trait enables to print struct in a way we can see its value while we’re debugging 
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+// method definition
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        rect1.area()
+    );
 }
 ```
