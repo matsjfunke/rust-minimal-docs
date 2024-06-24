@@ -6,6 +6,14 @@ curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
 rustup update
 ```
 
+# Compile / run
+```bash
+# compile
+rustc main.rs
+# run
+./main
+```
+
 # Cargo: system and package manager
 Instead of saving the result of the build in the same directory as our code, Cargo stores it in the target/debug directory
 ```bash
@@ -80,7 +88,7 @@ char literals with single quotes, type is four bytes in size and represents a Un
 
 ```rust
 let x: char = 'hello';
-let x: String = "hello";
+let x: &str = "hello";
 ```
 
 ##Compound Types
@@ -154,7 +162,7 @@ fn main() {
 ```
 ## loops
 ```rust
-// loop is infiniate
+// loop -> used to loop infintely until break
 loop {
      break;
 }
@@ -178,3 +186,50 @@ fn main() {
     println!("LIFTOFF!!!");
 }
 ```
+
+#Ownership (managing computer memory)
+- python for example has "garbage collection" that regularly looks for no-longer-used memory as the program runs.
+- in other languages, the programmer must explicitly allocate and free the memory.
+- rust manages memory through a system of ownership with a set of rules that the compiler checks.
+
+## Stack & Heap
+**Stack** stores values in the order it gets them and removes the values in the opposite order -> **last in, first out**
+- think stack of books, new book layed on top is the first to get picked but.
+
+**Heap** less organized: putting data on heap, requests certain amount of space, memory allocator finds an empty spot in the heap that is big enough, marks it as being in use, and returns a pointer, which is the address of that location of the data
+- think of a table where you can place objects anywhere there's space. To find an object later, you need to remember its exact location on the table.
+```rust
+let x: i32 = 10; // Allocated on the stack
+let s = String::from("hello"); // Allocated on the heap
+```
+
+##Ownership rules
+- Each value in Rust has an owner.
+- There can only be one owner at a time.
+- When the owner goes out of scope, the value will be dropped.
+
+###copying variables
+```rust
+// stack
+let x = 5;
+let y = x;
+println!("x = {x}, y = {y}");
+
+//heap
+let s1 = String::from("hello");
+let s2 = s1.clone();
+println!("s1 = {s1}, s2 = {s2}");
+```
+
+##Variable Scope
+```rust
+{                      // s is not valid here, it’s not yet declared
+
+    let s = "hello";   // s is valid from this point forward
+    let s = String::from("hello"); // s is valid from this point forward
+
+    // do stuff with s
+}                      // this scope is now over, and s is no longer valid
+```
+
+##References and Borrowing
