@@ -22,9 +22,25 @@
    - [Variable Scope](#variable-scope)
    - [References & Borrowing](#references)
 10. [Structs, structuring related data](#structs)
-   - [Tuple Structs](#tuple-structs-w/o-names)
-   - [Methods](#struct-methods-(functions-inside-structs)
+    - [Tuple Structs](#tuple-structs)
+    - [Methods](#struct-methods)
+11. [Enums](#enums)
+    - [Option](#option)
+    - [match](#match)
 
+
+## Tuple Structs w/o names
+```rust
+struct Color(i32, i32, i32);
+struct Cursor(i32, i32, i32, i32);
+
+fn main() {
+    let black = Color(0, 0, 0);
+    let current_location = Cursor(0, 0, 0);
+}
+```
+
+## Struct Methods (functions inside structs)
 # Installation / Update
 ```bash
 # install with rustup:
@@ -341,7 +357,8 @@ fn build_user(email: String, username: String) -> User {
 }
 ```
 
-## Tuple Structs w/o names
+## Tuple Structs
+- structs w/o names
 ```rust
 struct Color(i32, i32, i32);
 struct Cursor(i32, i32, i32, i32);
@@ -352,7 +369,8 @@ fn main() {
 }
 ```
 
-## Struct Methods (functions inside structs)
+## Struct Methods
+- functions inside structs
 - impl stands for implementation aka. rust method
 ```rust
 #[derive(Debug)] // Debug trait enables to print struct in a way we can see its value while we’re debugging 
@@ -378,5 +396,83 @@ fn main() {
         "The area of the rectangle is {} square pixels.",
         rect1.area()
     );
+}
+```
+
+# Enums
+- enums: a way of saying a value is one of a possible set of values
+```rust
+// define enum IpAddrKind 
+enum IpAddrKind {
+    V4,
+    V6,
+}
+
+// instance of IpAddrKind
+let four = IpAddrKind::V4;
+let six = IpAddrKind::V6;
+```
+
+## Option
+Rust does not have nulls, but it does have an enum to encode the concept of a value being present or absent.
+- **Option<T>** defined by the standard library as:
+```rust
+enum Option<T> {
+    None,
+    Some(T),
+}
+```
+used in Rust for functions that may or may not return a result, allowing explicit handling of both scenarios through pattern matching (match)
+
+## Match
+Match that allows you to compare a value against a series of patterns and then execute code based on which pattern matches.
+```rust
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter,
+}
+
+fn value_in_cents(coin: Coin) -> u8 {
+    match coin {
+        Coin::Penny => 1,
+        Coin::Nickel => 5,
+        Coin::Dime => 10,
+        Coin::Quarter => 25,
+    }
+}
+```
+**Option and Match
+```rust
+// Define a struct to represent a person
+struct Person {
+    name: String,
+    age: Option<u8>,  // Age can be Some(u8) or None
+}
+
+// Function to print a greeting message based on age
+fn greet(person: Person) {
+    match person.age {
+        Some(age) => println!("Hello, {}! You are {} years old.", person.name, age),
+        None => println!("Hello, {}! I don't know your age.", person.name),
+    }
+}
+
+fn main() {
+    // Create instances of Person
+    let person1 = Person {
+        name: String::from("Alice"),
+        age: Some(30),
+    };
+
+    let person2 = Person {
+        name: String::from("Bob"),
+        age: None,
+    };
+
+    // Call greet function with different persons
+    greet(person1);
+    greet(person2);
 }
 ```
