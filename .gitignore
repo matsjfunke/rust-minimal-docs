@@ -1,5 +1,5 @@
 env
-*/target
+experiments/*/target
 __pycache__/
 *.xlsx
 *.csv

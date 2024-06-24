@@ -22,6 +22,8 @@
    - [Variable Scope](#variable-scope)
    - [References & Borrowing](#references)
 10. [Structs, structuring related data](#structs)
+   - [Tuple Structs](#tuple-structs-w/o-names)
+   - [Methods](#struct-methods-(functions-inside-structs)
 
 # Installation / Update
 ```bash
