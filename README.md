@@ -1,3 +1,28 @@
+# Table of Contents
+1. [Installation / Update](#installation--update)
+2. [Compile / run](#compile--run)
+3. [Cargo: system and package manager](#cargo-system-and-package-manager)
+4. [Variables](#variables)
+5. [Types](#types)
+   - [Integers](#integers)
+   - [Floats](#floats)
+   - [Booleans](#booleans)
+   - [Characters](#characters)
+   - [Strings](#strings)
+6. [Compound Types](#compound-types)
+   - [Tuple ()](#tuple-)
+   - [Array []](#array-)
+7. [Functions](#functions)
+8. [Control Structure](#control-structure)
+   - [if, else](#if-else)
+   - [loops](#loops)
+9. [Ownership (managing computer memory)](#ownership-managing-computer-memory)
+   - [Stack & Heap](#stack--heap)
+   - [Ownership rules](#ownership-rules)
+   - [Variable Scope](#variable-scope)
+   - [References & Borrowing](## References)
+
+
 # Installation / Update
 ```bash
 # install with rustup:
@@ -49,7 +74,7 @@ println!({x}); // 10
 
 # Types
 
-###Integers
+### Integers
 Signed and unsigned refer negative or positive 
 - whether the number needs a sign (signed) or it will only ever be positive and can therefore be represented without a sign (unsigned).
 - default = i32
@@ -63,12 +88,12 @@ length | signed    | unsigned
 128-bit|     i128  |     u128
 arch   |     isize |     usize
  
-###Floats
+### Floats
 - all signed
 - f32 & f64 
 - default type f64 because on modern CPUs roughly same speed as f32 but more precise.
 
-###Booleans
+### Booleans
 - size = 1 bite
 ```rust
 fn main() {
@@ -77,22 +102,23 @@ fn main() {
     let f: bool = false; // with explicit type annotation
 }
 ```
-###Characters
+### Characters
 char literals with single quotes, type is four bytes in size and represents a Unicode Scalar Value, meaning it can represent a lot more than just ASCII
 
-###Strings
+### Strings
 - literals which use double quotes.
 - all UTF-8
 1. String -> create or modify strings
-2. &str (string slice) -> read/analyze strings
+2. &str (string slice) -> read only (immutable) [more on references later](## References)
+
 
 ```rust
 let x: char = 'hello';
 let x: &str = "hello";
 ```
 
-##Compound Types
-###Tuple ()
+## Compound Types
+### Tuple ()
 - grouping a variety of types
 - fixed length: once declared, they cannot grow or shrink in size.
 ```rust
@@ -107,7 +133,7 @@ fn main() {
 }
 ```
 
-###Array []
+### Array []
 - elements of array must have same type.
 - arrays in Rust have a fixed length.
 ```rust
@@ -117,7 +143,7 @@ let months = ["January", "February", "March", "April", "May", "June", "July",
 let a: [i32; 5] = [1, 2, 3, 4, 5];
 ```
 
-#Functions
+# Functions
 ```rust
  // Statements = intructions for  actions that dont return a value.
 let y = 6;
@@ -187,7 +213,7 @@ fn main() {
 }
 ```
 
-#Ownership (managing computer memory)
+# Ownership (managing computer memory)
 - python for example has "garbage collection" that regularly looks for no-longer-used memory as the program runs.
 - in other languages, the programmer must explicitly allocate and free the memory.
 - rust manages memory through a system of ownership with a set of rules that the compiler checks.
@@ -203,25 +229,26 @@ let x: i32 = 10; // Allocated on the stack
 let s = String::from("hello"); // Allocated on the heap
 ```
 
-##Ownership rules
+## Ownership rules
 - Each value in Rust has an owner.
 - There can only be one owner at a time.
 - When the owner goes out of scope, the value will be dropped.
 
-###copying variables
+### copying variables
 ```rust
 // stack
 let x = 5;
 let y = x;
 println!("x = {x}, y = {y}");
 
-//heap
+// heap
 let s1 = String::from("hello");
 let s2 = s1.clone();
 println!("s1 = {s1}, s2 = {s2}");
 ```
 
-##Variable Scope
+## Variable Scope
+- variables are only accessable if the parrent is in scope
 ```rust
 {                      // s is not valid here, it’s not yet declared
 
@@ -232,4 +259,37 @@ println!("s1 = {s1}, s2 = {s2}");
 }                      // this scope is now over, and s is no longer valid
 ```
 
-##References and Borrowing
+## References
+**Ownership problem:** ownership is transfer
+- when a function takes ownership of a value, the original variable can no longer be used unless the ownership is returned -> cumbersome and unnecessary
+
+**Solution: using References**
+- References allow you to refer to a value without taking ownership
+- use "&" to create references that borrow data without taking ownership.
+
+**Borrowing** -> accessing a variable's value through a reference
+```rust
+// reference example
+fn main() {
+    let s1 = String::from("hello");
+
+    let len = calculate_length(&s1); // & references s1
+
+    println!("The length of '{}' is {}.", s1, len);
+}
+
+fn calculate_length(s: &String) -> usize { // calculate_length borrows reference to s
+    s.len()
+}
+
+// mutable reference example
+fn main() {
+    let mut s = String::from("hello"); // mut makes s mutable
+
+    change(&mut s); // &mut references to s and shows mutablility
+}
+
+fn change(some_string: &mut String) {
+    some_string.push_str(", world");
+}
+```
