@@ -1,3 +1,8 @@
+The following is my subjective summary of the [rust book](https://doc.rust-lang.org/book/title-page.html)
+- for a more parctical learning checkout:
+    - [rustlings](https://github.com/rust-lang/rustlings/) for a commandline course
+    - [rust-by-example](https://doc.rust-lang.org/rust-by-example/) for learning through exercises
+
 # Table of Contents
 1. [Installation / Update](#installation--update)
 2. [Compile / run](#compile--run)
@@ -31,27 +36,9 @@
     - [Vectors](#vectors)
     - [HashMap](#hashmap)
 13. [Error handling](#error-handling)
+14. [Organizing Larger Projects](#organizing-larger-projects)
+15. [Further learning](#further-learning)
 
-
-## Tuple Structs w/o names
-```rust
-struct Color(i32, i32, i32);
-struct Cursor(i32, i32, i32, i32);
-
-fn main() {
-    let black = Color(0, 0, 0);
-    let current_location = Cursor(0, 0, 0);
-}
-```
-
-## Struct Methods (functions inside structs)
-# Installation / Update
-```bash
-# install with rustup:
-curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
-# update_
-rustup update
-```
 
 # Compile / run
 ```bash
@@ -595,3 +582,75 @@ fn main() {
     }
 }
 ```
+
+# Organizing Larger Projects
+organizing code into separate crates, modules, and packages becomes crucial for maintainability and readability
+```rust
+// create a new package use cargo, Rust's package manager and build system:
+cargo new my_project
+```
+- **Crates**: to separate Functionality, logically separate parts of your project into different crates, especially if they can be reused or tested independently.
+    - crate = compilation unit in Rust
+    - Cargo.toml file, you define dependencies and specify whether your package is a binary or library
+- **Modules** for Structuring: use modules to group related functionality together within a crate. Modules help manage namespaces and reduce the risk of naming conflicts.
+```rust
+mod module1 {
+    pub fn function1() {}
+}
+
+// Use the modules
+fn main() {
+    module1::function1();
+}
+```
+- **Dependency Management**: Use Cargo.toml to manage dependencies across different crates. Dependencies can be specified at the crate level to control what parts of your project depend on which external libraries.
+```toml
+[package]
+name = "my_project"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# dependencies listed here
+rand = "0.8.5"
+
+[[bin]]
+name = "my_binary"
+path = "src/main.rs"
+
+[[lib]]
+name = "my_library"
+path = "src/lib.rs"
+```
+
+example project structure:
+```
+my_project
+├── Cargo.toml
+└── src/
+    ├── main.rs        # Root crate (binary)
+    ├── lib.rs         # Library crate
+    ├── module1.rs     # Module file for module1
+    └── module2/
+        ├── mod.rs     # Module file for module2
+        └── submodule.rs  # Submodule file inside module2
+```
+usage:
+```rust
+// src/main.rs
+mod module1;
+mod module2;
+
+fn main() {
+    module1::function1();  // Accessing function from module1
+    module2::submodule::function_in_submodule();  // Accessing function from submodule in module2
+}
+```
+
+# Further learning
+**Generics** provide flexibility and reusability by allowing code to operate on multiple types.
+**Traits** define shared behavior, allowing different types to implement the same methods.
+**Lifetimes** ensure references are valid for as long as needed, preventing memory safety issues.
+**Smart Pointers** (Box, Rc, RefCell) offer advanced memory management capabilities, such as heap allocation, reference counting, and interior mutability.
+**Patterns** are a special syntax in Rust for matching against the structure of types, both complex and simple.
+**Tests** are Rust functions that verify that the non-test code is functioning in the expected manner. 
