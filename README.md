@@ -27,6 +27,9 @@
 11. [Enums](#enums)
     - [Option](#option)
     - [match](#match)
+12. [Data Structures](#data-structures)
+    - [HashMap](#hashmap)
+    - [Vectors](#vectors)
 
 
 ## Tuple Structs w/o names
@@ -443,7 +446,7 @@ fn value_in_cents(coin: Coin) -> u8 {
     }
 }
 ```
-**Option and Match
+**Option and Match**
 ```rust
 // Define a struct to represent a person
 struct Person {
@@ -475,4 +478,77 @@ fn main() {
     greet(person1);
     greet(person2);
 }
+```
+
+# Data Structures
+Sequences: |  Vec, VecDeque, LinkedList
+Maps:      |  HashMap, BTreeMap
+Sets:      |  HashSet, BTreeSet
+Misc:      |  BinaryHeap
+
+## Vectors
+**Vectors** (Vec<T>) are dynamically sized, meaning they can grow or shrink at runtime as opposed to Tuples / Arrays. 
+- vectors are either mutable or immutable
+- normal scope applies
+```rust
+// empty vector
+let mut v: Vec<i32> = Vec::new();
+// push into vector
+v.push(5);
+v.push(6);
+v.push(7);
+v.push(8);
+
+// get the thrid item with .get
+let third: Option<&i32> = v.get(2);
+match third {
+    Some(third) => println!("The third element is {third}"),
+    None => println!("There is no third element."),
+}
+
+// pre populated vector
+let mut x = vec![100, 32, 57];
+// iterating over vector
+for i in &mut x {
+    *i += 50;
+}
+println!("index 0 {}", x.get(0))
+
+// Vectors can store different types by using an enum.
+enum SpreadsheetCell {
+    Int(i32),
+    Float(f64),
+    Text(String),
+}
+
+let row = vec![
+    SpreadsheetCell::Int(3),
+    SpreadsheetCell::Text(String::from("blue")),
+    SpreadsheetCell::Float(10.12),
+];
+```
+
+## HashMap
+**HashMap<K, V>** stores a mapping of keys of type K to values of type V using a hashing function, which determines how it places these keys and values into memory. 
+```rust
+use std::collections::HashMap; // import from std library
+
+let mut scores = HashMap::new();
+
+// save key, value pairs in hashmap
+scores.insert(String::from("Blue"), 10);
+scores.insert(String::from("Yellow"), 50);
+
+// overwriting values
+scores.insert(String::from("Blue"), 25); // "Blue" key's value is updated
+
+// accessing values
+let team_name = String::from("Blue");
+let score = scores.get(&team_name).copied().unwrap_or(0);
+
+// iterating
+for (key, value) in &scores {
+    println!("{key}: {value}");
+}
+
 ```
