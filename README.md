@@ -28,8 +28,9 @@
     - [Option](#option)
     - [match](#match)
 12. [Data Structures](#data-structures)
-    - [HashMap](#hashmap)
     - [Vectors](#vectors)
+    - [HashMap](#hashmap)
+13. [Error handling](#error-handling)
 
 
 ## Tuple Structs w/o names
@@ -551,4 +552,46 @@ for (key, value) in &scores {
     println!("{key}: {value}");
 }
 
+```
+
+# Error handling
+errors categories: **recoverable** and **unrecoverable** errors. 
+- unrecoverable errors are always symptoms of bugs, like trying to access a location beyond the end of an array, we want to immediately stop the program.
+    - rust uses "panic!" macro that stops execution when the program encounters an unrecoverable error.
+```rust
+// calling the panic macro
+fn main() {
+    panic!("crash and burn");
+}
+// fuck around and find out
+fn main() {
+    let v = vec![1, 2, 3];
+    println!("{}", v[99]); // This will cause a panic
+}
+```
+- recoverable error: like file not found error, we want to report the problem to the user and retry the operation. 
+    - rust has the type "Result<T, E>" for recoverable errors.
+```rust
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+
+// example use
+use std::fs::File;
+use std::io::{self, Read};
+
+fn read_file(filename: &str) -> Result<String, io::Error> {
+    let mut file = File::open(filename)?;
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)?;
+    Ok(contents)
+}
+
+fn main() {
+    match read_file("example.txt") {
+        Ok(contents) => println!("File contents: {}", contents),
+        Err(e) => eprintln!("Error reading file: {}", e),
+    }
+}
 ```
