@@ -1,9 +1,11 @@
 The following is my subjective summary of the [rust book](https://doc.rust-lang.org/book/title-page.html)
+
 - for a more parctical learning checkout:
-    - [rustlings](https://github.com/rust-lang/rustlings/) for a commandline course
-    - [rust-by-example](https://doc.rust-lang.org/rust-by-example/) for learning through exercises
+  - [rustlings](https://github.com/rust-lang/rustlings/) for a commandline course
+  - [rust-by-example](https://doc.rust-lang.org/rust-by-example/) for learning through exercises
 
 # Table of Contents
+
 1. [Installation / Update](#installation--update)
 2. [Compile / run](#compile--run)
 3. [Cargo: system and package manager](#cargo-system-and-package-manager)
@@ -39,8 +41,25 @@ The following is my subjective summary of the [rust book](https://doc.rust-lang.
 14. [Organizing Larger Projects](#organizing-larger-projects)
 15. [Further learning](#further-learning)
 
+# Installation / Update
+
+Install Rust, with `rustup`, which manages Rust versions and associated tools:
+
+```bash
+# Install Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# Follow the on-screen instructions to complete the installation.
+
+# Update Rust
+rustup update
+
+# verify installation / check version
+rustc --version
+```
 
 # Compile / run
+
 ```bash
 # create rust file
 echo 'fn main() { println!("Hello, World!"); }' > hello.rs
@@ -51,7 +70,9 @@ rustc main.rs
 ```
 
 # Cargo: system and package manager
+
 Instead of saving the result of the build in the same directory as our code, Cargo stores it in the target/debug directory
+
 ```bash
 # create a project
 cargo new <project-name>
@@ -61,12 +82,24 @@ cargo build
 cargo run
 # build a project without producing a binary to check for errors
 cargo check
+```
+
+To add libraries (crates), update Cargo.toml:
+
+```toml
+[dependencies]
+rand = "0.8"
+```
+
+```sh
 # update dependencies
 cargo update
 ```
 
 # Variables
+
 - all immutable by default
+
 ```rust
 let x = 5; // immutable
 let mut x = 5; // mutable
@@ -75,8 +108,10 @@ const x = 5; // always immutable & typed
 ```
 
 **shadowing** (reusing name)
+
 - must be same type
 - only works in same scope
+
 ```rust
 let x = 5;
 let x = x + 5;
@@ -86,26 +121,31 @@ println!({x}); // 10
 # Types
 
 ### Integers
-Signed and unsigned refer negative or positive 
+
+Signed and unsigned refer negative or positive
+
 - whether the number needs a sign (signed) or it will only ever be positive and can therefore be represented without a sign (unsigned).
 - default = i32
 
-length | signed    | unsigned
--------|-----------|------------
-8-bit  |     i8    |     u8
-16-bit |     i16   |     u16
-32-bit |     i32   |     u32
-64-bit |     i64   |     u64
-128-bit|     i128  |     u128
-arch   |     isize |     usize
- 
+| length  | signed | unsigned |
+| ------- | ------ | -------- |
+| 8-bit   | i8     | u8       |
+| 16-bit  | i16    | u16      |
+| 32-bit  | i32    | u32      |
+| 64-bit  | i64    | u64      |
+| 128-bit | i128   | u128     |
+| arch    | isize  | usize    |
+
 ### Floats
+
 - all signed
-- f32 & f64 
+- f32 & f64
 - default type f64 because on modern CPUs roughly same speed as f32 but more precise.
 
 ### Booleans
+
 - size = 1 bite
+
 ```rust
 fn main() {
     let t = true;
@@ -113,15 +153,18 @@ fn main() {
     let f: bool = false; // with explicit type annotation
 }
 ```
+
 ### Characters
+
 char literals with single quotes, type is four bytes in size and represents a Unicode Scalar Value, meaning it can represent a lot more than just ASCII
 
 ### Strings
+
 - literals which use double quotes.
 - all UTF-8
+
 1. String -> create or modify strings
 2. &str (string slice) -> read only (immutable) [more on references later](#references)
-
 
 ```rust
 let x: char = 'hello';
@@ -129,9 +172,14 @@ let x: &str = "hello";
 ```
 
 ## Compound Types
+
+**Compound types** are types that can group multiple values into one.
+
 ### Tuple ()
+
 - grouping a variety of types
 - fixed length: once declared, they cannot grow or shrink in size.
+
 ```rust
 fn main() {
     let tup: (i32, f64, u8) = (500, 6.4, 1);
@@ -145,8 +193,10 @@ fn main() {
 ```
 
 ### Array []
+
 - elements of array must have same type.
 - arrays in Rust have a fixed length.
+
 ```rust
 let months = ["January", "February", "March", "April", "May", "June", "July",
               "August", "September", "October", "November", "December"];
@@ -155,6 +205,7 @@ let a: [i32; 5] = [1, 2, 3, 4, 5];
 ```
 
 # Functions
+
 ```rust
  // Statements = intructions for  actions that dont return a value.
 let y = 6;
@@ -164,8 +215,10 @@ let y = {
     x + 1
 };
 ```
+
 - main function / entrypoint at top of file
 - returning values
+
 ```rust
 fn main() {
     let result = sum(5, 10);
@@ -180,7 +233,9 @@ fn sum(a: i32, b: i32) -> i32 { //don’t need to name return values, but we mus
 ```
 
 # Control Structure
+
 ## if, else
+
 ```rust
 fn main() {
     let condition = true;
@@ -197,7 +252,9 @@ fn main() {
     }
 }
 ```
+
 ## loops
+
 ```rust
 // loop -> used to loop infintely until break
 loop {
@@ -225,27 +282,36 @@ fn main() {
 ```
 
 # Ownership (managing computer memory)
+
+**Ownership** Rust manages memory by ensuring each variable has a single owner at a time, automatically deallocating it when the owner goes out of scope.
+
 - python for example has "garbage collection" that regularly looks for no-longer-used memory as the program runs.
 - in other languages, the programmer must explicitly allocate and free the memory.
 - rust manages memory through a system of ownership with a set of rules that the compiler checks.
 
 ## Stack & Heap
+
 **Stack** stores values in the order it gets them and removes the values in the opposite order -> **last in, first out**
-- think stack of books, new book layed on top is the first to get picked but.
+
+- **think:** stack of books, new book layed on top is the first to get picked but.
 
 **Heap** less organized: putting data on heap, requests certain amount of space, memory allocator finds an empty spot in the heap that is big enough, marks it as being in use, and returns a pointer, which is the address of that location of the data
-- think of a table where you can place objects anywhere there's space. To find an object later, you need to remember its exact location on the table.
+
+- **think:** of a table where you can place objects anywhere there's space. To find an object later, you need to remember its exact location on the table.
+
 ```rust
 let x: i32 = 10; // Allocated on the stack
 let s = String::from("hello"); // Allocated on the heap
 ```
 
 ## Ownership rules
+
 - Each value in Rust has an owner.
 - There can only be one owner at a time.
 - When the owner goes out of scope, the value will be dropped.
 
 ### copying variables
+
 ```rust
 // stack
 let x = 5;
@@ -259,7 +325,9 @@ println!("s1 = {s1}, s2 = {s2}");
 ```
 
 ## Variable Scope
+
 - variables are only accessable if the parrent is in scope
+
 ```rust
 {                      // s is not valid here, it’s not yet declared
 
@@ -270,15 +338,19 @@ println!("s1 = {s1}, s2 = {s2}");
 }                      // this scope is now over, and s is no longer valid
 ```
 
-## References
+## References / Borrowing
+
 **Ownership problem:** ownership is transfer
+
 - when a function takes ownership of a value, the original variable can no longer be used unless the ownership is returned -> cumbersome and unnecessary
 
 **Solution: using References**
+
 - References allow you to refer to a value without taking ownership
 - use "&" to create references that borrow data without taking ownership.
 
 **Borrowing** -> accessing a variable's value through a reference
+
 ```rust
 // reference example
 fn main() {
@@ -305,9 +377,10 @@ fn change(some_string: &mut String) {
 }
 ```
 
-
 # Structs
+
 similar to [tuple](#tuple-): pieces of struct can be different types but in struct each piece of data has a name to clarify purpose
+
 ```rust
 // define a struct
 struct User {
@@ -330,7 +403,7 @@ fn main() {
 
     // Creating Instances from Other Instances with Struct Update Syntax
     let user2 = User {
-        active: user1.active, 
+        active: user1.active,
         username: user1.username,
         email: String::from("another@example.com"),
         sign_in_count: user1.sign_in_count,
@@ -349,7 +422,9 @@ fn build_user(email: String, username: String) -> User {
 ```
 
 ## Tuple Structs
+
 - structs w/o names
+
 ```rust
 struct Color(i32, i32, i32);
 struct Cursor(i32, i32, i32, i32);
@@ -361,10 +436,12 @@ fn main() {
 ```
 
 ## Struct Methods
+
 - functions inside structs
 - impl stands for implementation aka. rust method
+
 ```rust
-#[derive(Debug)] // Debug trait enables to print struct in a way we can see its value while we’re debugging 
+#[derive(Debug)] // Debug trait enables to print struct in a way we can see its value while we’re debugging
 struct Rectangle {
     width: u32,
     height: u32,
@@ -391,9 +468,11 @@ fn main() {
 ```
 
 # Enums
+
 - enums: a way of saying a value is one of a possible set of values
+
 ```rust
-// define enum IpAddrKind 
+// define enum IpAddrKind
 enum IpAddrKind {
     V4,
     V6,
@@ -405,18 +484,24 @@ let six = IpAddrKind::V6;
 ```
 
 ## Option
+
 Rust does not have nulls, but it does have an enum to encode the concept of a value being present or absent.
+
 - **Option<T>** defined by the standard library as:
+
 ```rust
 enum Option<T> {
     None,
     Some(T),
 }
 ```
+
 used in Rust for functions that may or may not return a result, allowing explicit handling of both scenarios through pattern matching (match)
 
 ## Match
-Match that allows you to compare a value against a series of patterns and then execute code based on which pattern matches.
+
+Match allows you to compare a value against a series of patterns and then execute code based on which pattern matches.
+
 ```rust
 enum Coin {
     Penny,
@@ -434,7 +519,9 @@ fn value_in_cents(coin: Coin) -> u8 {
     }
 }
 ```
+
 **Option and Match**
+
 ```rust
 // Define a struct to represent a person
 struct Person {
@@ -469,15 +556,21 @@ fn main() {
 ```
 
 # Data Structures
-Sequences: |  Vec, VecDeque, LinkedList
-Maps:      |  HashMap, BTreeMap
-Sets:      |  HashSet, BTreeSet
-Misc:      |  BinaryHeap
+
+| Category  | Types                     |
+| --------- | ------------------------- |
+| Sequences | Vec, VecDeque, LinkedList |
+| Maps      | HashMap, BTreeMap         |
+| Sets      | HashSet, BTreeSet         |
+| Misc      | BinaryHeap                |
 
 ## Vectors
-**Vectors** (Vec<T>) are dynamically sized, meaning they can grow or shrink at runtime as opposed to Tuples / Arrays. 
+
+**Vectors** (Vec<T>) are dynamically sized, meaning they can grow or shrink at runtime as opposed to Tuples / Arrays.
+
 - vectors are either mutable or immutable
 - normal scope applies
+
 ```rust
 // empty vector
 let mut v: Vec<i32> = Vec::new();
@@ -501,23 +594,45 @@ for i in &mut x {
     *i += 50;
 }
 println!("index 0 {}", x.get(0))
+```
 
-// Vectors can store different types by using an enum.
+**Vectors can store different types by using an enum:**
+
+```rust
 enum SpreadsheetCell {
     Int(i32),
     Float(f64),
     Text(String),
 }
 
-let row = vec![
-    SpreadsheetCell::Int(3),
-    SpreadsheetCell::Text(String::from("blue")),
-    SpreadsheetCell::Float(10.12),
-];
+fn main() {
+    let mut row = vec![
+        // pre populate vector
+        SpreadsheetCell::Int(3),
+        SpreadsheetCell::Text(String::from("blue")),
+        SpreadsheetCell::Float(10.12),
+    ];
+
+    // Adding more values to the vector
+    row.push(SpreadsheetCell::Int(42));
+    row.push(SpreadsheetCell::Text(String::from("green")));
+    row.push(SpreadsheetCell::Float(7.89));
+
+    // Accessing and printing the values
+    for cell in &row {
+        match cell {
+            SpreadsheetCell::Int(value) => println!("Int: {}", value),
+            SpreadsheetCell::Float(value) => println!("Float: {}", value),
+            SpreadsheetCell::Text(value) => println!("Text: {}", value),
+        }
+    }
+}
 ```
 
 ## HashMap
-**HashMap<K, V>** stores a mapping of keys of type K to values of type V using a hashing function, which determines how it places these keys and values into memory. 
+
+**HashMap<K, V>** stores a mapping of keys of type K to values of type V using a hashing function, which determines how it places these keys and values into memory.
+
 ```rust
 use std::collections::HashMap; // import from std library
 
@@ -542,9 +657,12 @@ for (key, value) in &scores {
 ```
 
 # Error handling
-errors categories: **recoverable** and **unrecoverable** errors. 
+
+errors categories: **recoverable** and **unrecoverable** errors.
+
 - unrecoverable errors are always symptoms of bugs, like trying to access a location beyond the end of an array, we want to immediately stop the program.
-    - rust uses "panic!" macro that stops execution when the program encounters an unrecoverable error.
+  - rust uses "panic!" macro that stops execution when the program encounters an unrecoverable error.
+
 ```rust
 // calling the panic macro
 fn main() {
@@ -556,8 +674,10 @@ fn main() {
     println!("{}", v[99]); // This will cause a panic
 }
 ```
-- recoverable error: like file not found error, we want to report the problem to the user and retry the operation. 
-    - rust has the type "Result<T, E>" for recoverable errors.
+
+- recoverable error: like file not found error, we want to report the problem to the user and retry the operation.
+  - rust has the type "Result<T, E>" for recoverable errors.
+
 ```rust
 enum Result<T, E> {
     Ok(T),
@@ -584,15 +704,14 @@ fn main() {
 ```
 
 # Organizing Larger Projects
+
 organizing code into separate crates, modules, and packages becomes crucial for maintainability and readability
-```rust
-// create a new package use cargo, Rust's package manager and build system:
-cargo new my_project
-```
+
 - **Crates**: to separate Functionality, logically separate parts of your project into different crates, especially if they can be reused or tested independently.
-    - crate = compilation unit in Rust
-    - Cargo.toml file, you define dependencies and specify whether your package is a binary or library
+  - crate = compilation unit in Rust
+  - Cargo.toml file, you define dependencies and specify whether your package is a binary or library
 - **Modules** for Structuring: use modules to group related functionality together within a crate. Modules help manage namespaces and reduce the risk of naming conflicts.
+
 ```rust
 mod module1 {
     pub fn function1() {}
@@ -603,7 +722,9 @@ fn main() {
     module1::function1();
 }
 ```
+
 - **Dependency Management**: Use Cargo.toml to manage dependencies across different crates. Dependencies can be specified at the crate level to control what parts of your project depend on which external libraries.
+
 ```toml
 [package]
 name = "my_project"
@@ -624,6 +745,7 @@ path = "src/lib.rs"
 ```
 
 example project structure:
+
 ```
 my_project
 ├── Cargo.toml
@@ -635,7 +757,9 @@ my_project
         ├── mod.rs     # Module file for module2
         └── submodule.rs  # Submodule file inside module2
 ```
+
 usage:
+
 ```rust
 // src/main.rs
 mod module1;
@@ -648,9 +772,10 @@ fn main() {
 ```
 
 # Further learning
+
 **Generics** provide flexibility and reusability by allowing code to operate on multiple types.
 **Traits** define shared behavior, allowing different types to implement the same methods.
 **Lifetimes** ensure references are valid for as long as needed, preventing memory safety issues.
 **Smart Pointers** (Box, Rc, RefCell) offer advanced memory management capabilities, such as heap allocation, reference counting, and interior mutability.
 **Patterns** are a special syntax in Rust for matching against the structure of types, both complex and simple.
-**Tests** are Rust functions that verify that the non-test code is functioning in the expected manner. 
+**Tests** are Rust functions that verify that the non-test code is functioning in the expected manner.
